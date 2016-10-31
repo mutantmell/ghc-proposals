@@ -1,0 +1,85 @@
+.. proposal-number:: Leave blank. This will be filled in when the proposal is
+                     accepted.
+
+.. trac-ticket:: Leave blank. This will eventually be filled with the Trac
+                 ticket number which will track the progress of the
+                 implementation of the feature.
+
+.. implemented:: Leave blank. This will be filled in with the first GHC version which
+                 implements the described feature.
+
+.. highlight:: haskell
+
+Visible Type Coercion
+==============
+
+We propose the ability to use a type application-like syntax in order to temporarily
+coerce a type when passed into a function.
+
+Motivation
+----------
+
+One of the more novel features of Haskell is the ability to specify a typeclass.
+The community and core contributors have embraced the ad-hoc polymorphism that 
+typeclasses enable, perhaps most famously with ``Monad`` s.
+
+One of the most important features of typeclasses is "canonicity", i.e. that 
+there can be at most one instance of a particular typeclass for a particular
+type.  While canonicity provides many benefits, it doesn't offer a solution for
+types that have more than one "natural" instance for a typeclass. For example,
+``Int`` has a reasonable ``Monoid`` over both addition and multiplication.
+
+To solve this, ``Int`` has no ``Monoid`` monoid instance; instead, there are both
+a ``Sum`` newtype and a ``Product`` newtype that can contain an ``Int`` , and they
+implement the ``Monoid`` typeclass. In order to make this convenient, GHC provides
+a ``Coercible`` typeclass,  which allows uses to manually use the ``coerce`` function
+to convert back and forth, and automatically generates ``Coercible`` instance to and
+from the newtype.
+
+While this solution works technically, in practice it can prove to be unwieldy:
+
+1. These newtypes are not often useful outside of their typeclass instances, and must 
+   be coerced back in order to continue the computation.
+
+  * In particular, most library code is written with the base type in mind 
+    (Int vs. Sum/Product), making it awkward to integrate these newtypes with
+    existing code.
+
+2. In the (common) case where there are multiple coercible types, the author has to
+   manually provide typing information around the calls to coerce.
+
+Combined, these two bits of code make the actual usage of newtypes more awkward than
+it needs to be.
+
+Proposed Change
+---------------
+
+Here you should describe in precise terms what the proposal seeks to change.
+This should cover several things,
+
+* define the grammar and semantics of any new syntactic constructs
+* define the interfaces for any new library interfaces
+* discuss how the change addresses the points raised in the Motivation section
+* discuss how the proposed approach might interact with existing features  
+
+Note, however, that this section need not describe details of the
+implementation of the feature. The proposal is merely supposed to give a
+conceptual specification of the new feature and its behavior.
+
+Drawbacks
+---------
+
+What are the reasons for *not* adopting the proposed change. These might include
+complicating the language grammar, poor interactions with other features, 
+
+Alternatives
+------------
+
+Here is where you can describe possible variants to the approach described in
+the Proposed Change section.
+
+Unresolved Questions
+--------------------
+
+Are there any parts of the design that are still unclear? Hopefully this section
+will be empty by the time the proposal is brought up for a final decision.
