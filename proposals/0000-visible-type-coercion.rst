@@ -38,18 +38,14 @@ from the newtype.
 
 While this solution works technically, in practice it can prove to be unwieldy:
 
-1. These newtypes are not often useful outside of their typeclass instances, and must 
-   be coerced back in order to continue the computation.
+1. These newtypes are not often useful outside of their typeclass instances, and
+   must be coerced back in order to continue the computation.  In particular, 
+   most code is written with the base type in mind (Int vs. Sum/Product), making 
+   it awkward to integrate these newtypes with existing code.
 
-  * In particular, most library code is written with the base type in mind 
-    (Int vs. Sum/Product), making it awkward to integrate these newtypes with
-    existing code.
+2. In the (common) case where there are multiple coercible types, the author has
+   to manually provide typing information around the calls to coerce.
 
-2. In the (common) case where there are multiple coercible types, the author has to
-   manually provide typing information around the calls to coerce.
-
-Combined, these two bits of code make the actual usage of newtypes more awkward than
-it needs to be.
 
 Proposed Change
 ---------------
