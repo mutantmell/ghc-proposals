@@ -73,16 +73,11 @@ The extension has the following semantics.
 * When applied to a value of type S, and coercing to a T, both ``Coercible S T`` and
   ``Coericible T S`` must be in scope.
 
-* This de-sugars to a call to coerce the type, then a call to coerce on the entire result.
-  Hmm, this may not work out cleanly, as it is not intuitively obvious where the back should be...
-  Probably around the result of the entire function?
+* This de-sugars to a call to ``coerce`` the argument passed in.
 
-``allGT3 ints = F.foldMap (>3)@(Int -> All) ints`` ==>
-``allGT3 ints = coerce (F.foldMap (coerce (>3)) ints)
-``complicated f = foo (bar a) (baz f@(Int -> All) x y z)``, where ``baz`` does not return the expected type...
-This seems pretty complicated to do in the result.
-
-What about a function that takes an ``Any`` and returns an ``All`` ???
+* If the type indicated in the ``@`` is in the return value, ``coerce`` is wrapped around
+  the entire function to convert it to the input type, e.g. ``F.fold [True, False, True]@[Any]``
+  becomes ``coerce (F.fold (coerce [True, False, True]))``
 
 
 Drawbacks
