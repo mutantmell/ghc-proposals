@@ -40,7 +40,7 @@ While this solution works technically, in practice it can prove to be unwieldy:
 
 1. These newtypes are not often useful outside of their typeclass instances, and
    must be coerced back in order to continue the computation.  In particular, 
-   most code is written with the base type in mind (Int vs. Sum/Product), making 
+   most code is written with the base type in mind (``Int`` vs. ``Sum`` / ``Product``), making 
    it awkward to integrate these newtypes with existing code.
 
 2. In the (common) case where there are multiple coercible types, the author has
@@ -50,17 +50,40 @@ While this solution works technically, in practice it can prove to be unwieldy:
 Proposed Change
 ---------------
 
-Here you should describe in precise terms what the proposal seeks to change.
-This should cover several things,
+We propose the addition of a new language extension:
 
-* define the grammar and semantics of any new syntactic constructs
-* define the interfaces for any new library interfaces
-* discuss how the change addresses the points raised in the Motivation section
-* discuss how the proposed approach might interact with existing features  
+``{-# LANGUAGE VisibleTypeCoercion #-}``
 
-Note, however, that this section need not describe details of the
-implementation of the feature. The proposal is merely supposed to give a
-conceptual specification of the new feature and its behavior.
+This lets you write:
+
+.. code-block:: haskell
+    import qualified Data.Foldable as F
+    import           Data.Monoid (All(..))
+
+    foo f x = f x@Type
+    
+    -- concrete example
+    all :: [Bool] -> Bool
+    all bools = F.fold bools@[All]``
+
+Which is reminiscent of the recent Visible Type Application extension.
+
+The extension has the following semantics.
+
+* When applied to a value of type S, and coercing to a T, both ``Coercible S T`` and
+  ``Coericible T S`` must be in scope.
+
+* This de-sugars to a call to coerce the type, then a call to coerce on the entire result.
+  Hmm, this may not work out cleanly, as it is not intuitively obvious where the back should be...
+  Probably around the result of the entire function?
+
+``allGT3 ints = F.foldMap (>3)@(Int -> All) ints`` ==>
+``allGT3 ints = coerce (F.foldMap (coerce (>3)) ints)
+``complicated f = foo (bar a) (baz f@(Int -> All) x y z)``, where ``baz`` does not return the expected type...
+This seems pretty complicated to do in the result.
+
+What about a function that takes an ``Any`` and returns an ``All`` ???
+
 
 Drawbacks
 ---------
