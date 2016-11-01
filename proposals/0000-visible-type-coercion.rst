@@ -61,11 +61,11 @@ This lets you write:
     import qualified Data.Foldable as F
     import           Data.Monoid (All(..))
 
-    foo f x = f x@Type
+    foo f x = f x@(a => b)
     
     -- concrete example
     all :: [Bool] -> Bool
-    all bools = F.fold bools@[All]``
+    all bools = F.fold bools@(Bool => All)``
 
 Which is reminiscent of the recent Visible Type Application extension.
 
@@ -74,11 +74,10 @@ The extension has the following semantics.
 * When applied to a value of type S, and coercing to a T, both ``Coercible S T`` and
   ``Coericible T S`` must be in scope.
 
-* ``coerce`` is wrapped around the argument passed in and around the output of the function
+* ``coerce`` is wrapped around the argument passed in and the output of the function
 
-  * TODO: is it possible for the compiler to determine these boundaries?  Can it actually infer ``[Bool] -> [Any]`` ?
-  * ``F.fold [True, False, True]@[Any]`` becomes ``coerce (F.fold (coerce [True, False, True]))``
-  * ``F.foldMap (even)@(Int -> All) [2,4,6]`` becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
+  * ``F.fold [True, False, True]@(Bool => All)`` becomes ``coerce (F.fold (coerce [True, False, True]))``
+  * ``F.foldMap (even)@(Bool => All) [2,4,6]`` becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
 
 
 Drawbacks
