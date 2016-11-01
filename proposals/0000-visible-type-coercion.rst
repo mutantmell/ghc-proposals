@@ -74,12 +74,10 @@ The extension has the following semantics.
 * When applied to a value of type S, and coercing to a T, both ``Coercible S T`` and
   ``Coericible T S`` must be in scope.
 
-* This de-sugars to a call to ``coerce`` the argument passed in.
+* ``coerce`` is wrapped around the argument passed in and around the output of the function
 
-* If the type indicated in the ``@`` is elsewhere in the function, ``coerce`` is wrapped around
-  the the output of function to convert it to the input type, e.g. ``F.fold [True, False, True]@[Any]``
-  becomes ``coerce (F.fold (coerce [True, False, True]))``, and ``F.foldMap (even)@(Int -> All) [2,4,6]``
-  becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
+  * ``F.fold [True, False, True]@[Any]`` becomes ``coerce (F.fold (coerce [True, False, True]))``
+  * ``F.foldMap (even)@(Int -> All) [2,4,6]`` becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
 
 
 Drawbacks
