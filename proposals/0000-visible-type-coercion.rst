@@ -76,9 +76,10 @@ The extension has the following semantics.
 
 * This de-sugars to a call to ``coerce`` the argument passed in.
 
-* If the type indicated in the ``@`` is in the return value, ``coerce`` is wrapped around
-  the entire function to convert it to the input type, e.g. ``F.fold [True, False, True]@[Any]``
-  becomes ``coerce (F.fold (coerce [True, False, True]))``
+* If the type indicated in the ``@`` is elsewhere in the function, ``coerce`` is wrapped around
+  the the output of function to convert it to the input type, e.g. ``F.fold [True, False, True]@[Any]``
+  becomes ``coerce (F.fold (coerce [True, False, True]))``, and ``F.foldMap (even)@(Int -> All) [2,4,6]``
+  becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
 
 
 Drawbacks
