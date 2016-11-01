@@ -21,7 +21,7 @@ Motivation
 
 One of the more novel features of Haskell is the ability to specify a typeclass.
 The community and core contributors have embraced the ad-hoc polymorphism that 
-typeclasses enable, perhaps most famously with ``Monad`` s.
+typeclasses enable, perhaps most famously with ``Monad``.
 
 One of the most important features of typeclasses is "canonicity", i.e. that 
 there can be at most one instance of a particular typeclass for a particular
@@ -57,6 +57,7 @@ We propose the addition of a new language extension:
 This lets you write:
 
 .. code-block:: haskell
+
     import qualified Data.Foldable as F
     import           Data.Monoid (All(..))
 
