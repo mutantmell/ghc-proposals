@@ -76,6 +76,7 @@ The extension has the following semantics.
 
 * ``coerce`` is wrapped around the argument passed in and around the output of the function
 
+  * TODO: is it possible for the compiler to determine these boundaries?  Can it actually infer ``[Bool] -> [Any]`` ?
   * ``F.fold [True, False, True]@[Any]`` becomes ``coerce (F.fold (coerce [True, False, True]))``
   * ``F.foldMap (even)@(Int -> All) [2,4,6]`` becomes ``(coerce (F.foldMap (coerce even))) [2,4,6]``
 
